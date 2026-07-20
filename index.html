@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skill Finder — 找到最適合你的 Claude Skill</title>
+<meta name="description" content="精選 Claude Code / Claude Skills 搜尋器: 開發、測試、設計、內容、自動化、MCP、資料. 一鍵前往 GitHub.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'%3E%3Ccircle cx='48' cy='52' r='38' fill='%23E0A83B'/%3E%3Cpath d='M14 46 A34 34 0 0 1 82 46 Z' fill='%23B9821F'/%3E%3Crect x='10' y='42' width='76' height='9' rx='4.5' fill='%238A6A2F'/%3E%3Crect x='42' y='20' width='12' height='14' rx='5' fill='%238A6A2F'/%3E%3Ccircle cx='36' cy='62' r='5.5' fill='%233A2E1B'/%3E%3Ccircle cx='60' cy='62' r='5.5' fill='%233A2E1B'/%3E%3Cpath d='M38 74 Q48 81 58 74' stroke='%233A2E1B' stroke-width='4.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+<style>
+:root{
+  --sf-bg:#FDFBF7; --sf-gold:#E0A83B; --sf-gold-deep:#B9821F; --sf-ink:#3A2E1B;
+  --sf-ink-soft:#7A6A4F; --sf-card:#FFFFFF; --sf-line:#EFE6D4; --sf-stone:#F6EFE1;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;background:var(--sf-bg);color:var(--sf-ink);line-height:1.6}
+/* ---------- hero ---------- */
+.sf-hero{max-width:1080px;margin:0 auto;padding:72px 24px 36px;text-align:center}
+.sf-hero .sf-mascot{width:96px;height:96px;margin:0 auto 18px;animation:sfFloat 3s ease-in-out infinite}
+@keyframes sfFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.sf-hero h1{font-size:clamp(2rem,5vw,3.2rem);letter-spacing:.02em}
+.sf-hero h1 em{font-style:normal;color:var(--sf-gold-deep);background:linear-gradient(transparent 62%,rgba(224,168,59,.35) 62%)}
+.sf-hero p{margin-top:14px;color:var(--sf-ink-soft);font-size:1.05rem}
+.sf-scroll-hint{margin-top:26px;color:var(--sf-gold-deep);font-size:.9rem;animation:sfFloat 2s ease-in-out infinite}
+/* ---------- sticky search bar ---------- */
+.sf-bar{position:sticky;top:0;z-index:50;background:rgba(253,251,247,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--sf-line);padding:14px 24px}
+.sf-bar-inner{max-width:1080px;margin:0 auto}
+.sf-search{display:flex;align-items:center;gap:10px;background:var(--sf-card);border:2px solid var(--sf-line);border-radius:14px;padding:10px 16px;transition:border-color .2s}
+.sf-search:focus-within{border-color:var(--sf-gold)}
+.sf-search svg{flex:none}
+.sf-search input{flex:1;border:none;outline:none;font-size:1rem;background:transparent;color:var(--sf-ink)}
+.sf-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.sf-chip{border:1.5px solid var(--sf-line);background:var(--sf-card);color:var(--sf-ink-soft);border-radius:999px;padding:5px 14px;font-size:.87rem;cursor:pointer;transition:all .15s;user-select:none}
+.sf-chip:hover{border-color:var(--sf-gold)}
+.sf-chip.sf-on{background:var(--sf-gold);border-color:var(--sf-gold);color:#fff;font-weight:700}
+.sf-count{margin-top:8px;font-size:.82rem;color:var(--sf-ink-soft)}
+/* ---------- grid & stone cards ---------- */
+.sf-main{max-width:1080px;margin:0 auto;padding:34px 24px 60px}
+.sf-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:22px}
+.sf-slot{position:relative}
+.sf-card{position:relative;background:var(--sf-card);border:1px solid var(--sf-line);border-radius:16px;padding:20px;height:100%;display:flex;flex-direction:column;gap:10px;box-shadow:0 3px 0 var(--sf-stone),0 10px 24px rgba(58,46,27,.06);opacity:0;transform:translateX(-90px) rotate(-3deg)}
+.sf-slot.sf-r .sf-card{transform:translateX(90px) rotate(3deg)}
+.sf-slot.sf-in .sf-card{animation:sfPushL .6s cubic-bezier(.22,1.1,.36,1) forwards}
+.sf-slot.sf-in.sf-r .sf-card{animation-name:sfPushR}
+@keyframes sfPushL{to{opacity:1;transform:translateX(0) rotate(0)}}
+@keyframes sfPushR{to{opacity:1;transform:translateX(0) rotate(0)}}
+/* the little Claude figure that pushes the stone */
+.sf-pusher{position:absolute;top:50%;left:-16px;width:62px;height:62px;z-index:2;opacity:0;pointer-events:none}
+.sf-slot.sf-r .sf-pusher{left:auto;right:-14px;transform:scaleX(-1)}
+.sf-slot.sf-in .sf-pusher{animation:sfPusherGo 1.1s ease-out forwards}
+.sf-slot.sf-in.sf-r .sf-pusher{animation-name:sfPusherGoR}
+@keyframes sfPusherGo{
+  0%{opacity:1;transform:translate(-90px,-50%)}
+  50%{opacity:1;transform:translate(-6px,-50%)}
+  64%{transform:translate(-6px,-72%)}
+  76%{transform:translate(-6px,-50%)}
+  88%{transform:translate(-6px,-66%)}
+  100%{opacity:0;transform:translate(-6px,-50%)}
+}
+@keyframes sfPusherGoR{
+  0%{opacity:1;transform:scaleX(-1) translate(-90px,-50%)}
+  50%{opacity:1;transform:scaleX(-1) translate(-6px,-50%)}
+  64%{transform:scaleX(-1) translate(-6px,-72%)}
+  76%{transform:scaleX(-1) translate(-6px,-50%)}
+  88%{transform:scaleX(-1) translate(-6px,-66%)}
+  100%{opacity:0;transform:scaleX(-1) translate(-6px,-50%)}
+}
+.sf-card h3{font-size:1.08rem;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sf-badge{font-size:.68rem;font-weight:700;color:#fff;background:var(--sf-gold);border-radius:6px;padding:2px 7px;letter-spacing:.05em}
+.sf-badge.sf-official{background:#8A6A2F}
+.sf-desc{font-size:.92rem;color:var(--sf-ink-soft);flex:1}
+.sf-tags{display:flex;flex-wrap:wrap;gap:6px}
+.sf-tag{font-size:.74rem;color:var(--sf-gold-deep);background:rgba(224,168,59,.13);border-radius:6px;padding:2px 8px}
+.sf-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;border-top:1px dashed var(--sf-line);padding-top:12px;margin-top:2px}
+.sf-repo{font-size:.78rem;color:var(--sf-ink-soft);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sf-star{font-size:.82rem;color:var(--sf-gold-deep);font-weight:700;white-space:nowrap}
+.sf-go{display:block;text-align:center;margin-top:4px;background:var(--sf-gold);color:#fff;text-decoration:none;font-weight:700;font-size:.92rem;border-radius:10px;padding:9px 0;transition:background .15s,transform .1s}
+.sf-go:hover{background:var(--sf-gold-deep);transform:translateY(-1px)}
+.sf-empty{display:none;text-align:center;padding:70px 0;color:var(--sf-ink-soft)}
+.sf-empty svg{width:72px;height:72px;margin-bottom:12px;opacity:.7}
+/* ---------- footer ---------- */
+.sf-foot{border-top:1px solid var(--sf-line);text-align:center;padding:28px 24px 40px;font-size:.8rem;color:var(--sf-ink-soft)}
+.sf-foot a{color:var(--sf-gold-deep)}
+@media (prefers-reduced-motion:reduce){.sf-card{opacity:1!important;transform:none!important;animation:none!important}.sf-pusher{display:none}}
+</style>
+</head>
+<body>
+
+<header class="sf-hero">
+  <div class="sf-mascot">
+    <svg viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <ellipse cx="48" cy="90" rx="22" ry="4.5" fill="#EFE6D4"/>
+      <!-- legs -->
+      <rect x="39" y="72" width="7" height="15" rx="3.5" fill="#B9821F"/>
+      <rect x="50" y="72" width="7" height="15" rx="3.5" fill="#B9821F"/>
+      <ellipse cx="42" cy="88" rx="5" ry="3" fill="#8A6A2F"/><ellipse cx="54" cy="88" rx="5" ry="3" fill="#8A6A2F"/>
+      <!-- waving arm (up) -->
+      <rect x="66" y="34" width="7" height="20" rx="3.5" fill="#B9821F" transform="rotate(140 69 52)"/>
+      <circle cx="80" cy="38" r="4.2" fill="#E0A83B" stroke="#B9821F" stroke-width="1.6"/>
+      <!-- resting arm -->
+      <rect x="24" y="52" width="7" height="18" rx="3.5" fill="#B9821F" transform="rotate(18 27 54)"/>
+      <!-- body -->
+      <rect x="32" y="48" width="32" height="28" rx="13" fill="#E0A83B" stroke="#B9821F" stroke-width="2.2"/>
+      <ellipse cx="48" cy="64" rx="10" ry="8" fill="#FDFBF7"/>
+      <!-- head -->
+      <circle cx="48" cy="30" r="17" fill="#E0A83B" stroke="#B9821F" stroke-width="2.2"/>
+      <!-- hard hat -->
+      <path d="M32 27 A16 16 0 0 1 64 27 Z" fill="#B9821F"/>
+      <rect x="29" y="25.5" width="38" height="4.5" rx="2.2" fill="#8A6A2F"/>
+      <rect x="45" y="14.5" width="6" height="7" rx="2.5" fill="#8A6A2F"/>
+      <!-- face -->
+      <circle cx="42" cy="34" r="2.6" fill="#3A2E1B"/><circle cx="54" cy="34" r="2.6" fill="#3A2E1B"/>
+      <circle cx="43" cy="33.2" r=".9" fill="#fff"/><circle cx="55" cy="33.2" r=".9" fill="#fff"/>
+      <path d="M43 40 Q48 44.5 53 40" stroke="#3A2E1B" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+      <ellipse cx="37" cy="38.5" rx="2.6" ry="1.8" fill="#F3C878"/><ellipse cx="59" cy="38.5" rx="2.6" ry="1.8" fill="#F3C878"/>
+      <!-- sparkle -->
+      <path d="M20 20 l1.6 3.6 3.6 1.6 -3.6 1.6 -1.6 3.6 -1.6 -3.6 -3.6 -1.6 3.6 -1.6 Z" fill="#E0A83B" opacity=".8"/>
+    </svg>
+  </div>
+  <h1>Skill <em>Finder</em></h1>
+  <p>精選 <strong id="sf_total">…</strong> 個 Claude Skills — 開發與 AI 工作流專用. <br>搜尋、篩選, 找到適合你的那一塊, 點下去直達 GitHub.</p>
+  <div class="sf-scroll-hint">▼ 往下滑, 小人偶會把 Skill 一塊一塊推出來</div>
+</header>
+
+<div class="sf-bar">
+  <div class="sf-bar-inner">
+    <div class="sf-search">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#B9821F" stroke-width="2.2"/><path d="M20 20l-3.8-3.8" stroke="#B9821F" stroke-width="2.2" stroke-linecap="round"/></svg>
+      <input id="sf_search" type="search" placeholder="搜尋 skill 名稱、介紹、標籤…(例: 測試、PDF、MCP)" autocomplete="off">
+    </div>
+    <div class="sf-chips" id="sf_chips"></div>
+    <div class="sf-count" id="sf_count"></div>
+  </div>
+</div>
+
+<main class="sf-main">
+  <div class="sf-grid" id="sf_grid"></div>
+  <div class="sf-empty" id="sf_empty">
+    <svg viewBox="0 0 96 96"><circle cx="48" cy="42" r="26" fill="#EFE6D4"/><circle cx="39" cy="38" r="3.5" fill="#7A6A4F"/><circle cx="57" cy="38" r="3.5" fill="#7A6A4F"/><path d="M40 52 Q48 47 56 52" stroke="#7A6A4F" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>
+    <p>找不到符合的 skill, 換個關鍵字或取消篩選試試.</p>
+  </div>
+</main>
+
+<footer class="sf-foot">
+  <p>資料為人工策展, 更新於 2026-07. ★ 為該 skill 所屬 GitHub repo 的星數(非單一 skill).</p>
+  <p>安裝任何社群 skill 前請先閱讀其原始碼 — 官方建議只使用可信來源的 skill.</p>
+</footer>
+
+<script>
+// ---- sf = skill finder ----
+// c: dev 開發 / test 測試 / design 設計 / content 內容 / auto 自動化 / mcp MCP / data 資料 / doc 文件 / sec 資安 / col 合集
+const sf_cats = {dev:"開發",test:"測試",design:"設計",content:"內容",auto:"自動化",mcp:"MCP",data:"資料",doc:"文件",sec:"資安",col:"合集"};
+const sf_skills = [
+ // ---- 合集(入口級) ----
+ {n:"anthropics/skills(官方)",d:"Anthropic 官方 Skills 大本營:文件處理、artifacts、MCP builder、skill 規格與模板,學寫 skill 從這裡開始. ",c:["col","dev"],r:"anthropics/skills",s:162638,u:"https://github.com/anthropics/skills",o:1},
+ {n:"Superpowers",d:"最紅的 Claude Code 實戰技能庫:TDD、除錯、腦力激盪、git worktree 等 20+ 個經過實戰驗證的工作流 skill. ",c:["col","dev"],r:"obra/superpowers",s:257447,u:"https://github.com/obra/superpowers"},
+ {n:"Awesome Claude Skills(Composio)",d:"最大的社群精選清單,依分類整理數百個 skill,含大量可直接用的原創 skill. ",c:["col"],r:"ComposioHQ/awesome-claude-skills",s:68086,u:"https://github.com/ComposioHQ/awesome-claude-skills"},
+ {n:"Awesome Claude Code",d:"Claude Code 資源大全:skills、agents、status line、插件、開發工具一次收齊. ",c:["col"],r:"hesreallyhim/awesome-claude-code",s:50398,u:"https://github.com/hesreallyhim/awesome-claude-code"},
+ {n:"Claude Skills 大補帖",d:"skills + agents + commands 打包的大型合集,適合想一次裝好一整套的人. ",c:["col"],r:"alirezarezvani/claude-skills",s:22799,u:"https://github.com/alirezarezvani/claude-skills"},
+ {n:"Awesome Claude Skills(travisvn)",d:"聚焦 Claude Code 的精選清單,附新手入門指引與安全注意事項. ",c:["col"],r:"travisvn/awesome-claude-skills",s:14201,u:"https://github.com/travisvn/awesome-claude-skills"},
+ {n:"Awesome Claude Skills(BehiSecc)",d:"另一份維護中的精選清單,收錄角度偏工程與資安. ",c:["col","sec"],r:"BehiSecc/awesome-claude-skills",s:9803,u:"https://github.com/BehiSecc/awesome-claude-skills"},
+ {n:"Claude Skills Collection",d:"整理官方+社群公開 skill 的合集,分類清楚,適合瀏覽挖寶. ",c:["col"],r:"abubakarsiddik31/claude-skills-collection",s:859,u:"https://github.com/abubakarsiddik31/claude-skills-collection"},
+ // ---- 官方文件 skills ----
+ {n:"docx",d:"官方 Word 文件 skill:建立、編輯、分析 .docx,支援追蹤修訂、註解與格式. ",c:["doc"],r:"anthropics/skills",s:162638,u:"https://github.com/anthropics/skills/tree/main/skills/docx",o:1},
+ {n:"pdf",d:"官方 PDF skill:抽取文字與表格、合併、註記、處理表單. ",c:["doc"],r:"anthropics/skills",s:162638,u:"https://github.com/anthropics/skills/tree/main/skills/pdf",o:1},
+ {n:"pptx",d:"官方簡報 skill:讀取與生成投影片、版型、模板,做 deck 必備. ",c:["doc"],r:"anthropics/skills",s:162638,u:"https://github.com/anthropics/skills/tree/main/skills/pptx",o:1},
+ {n:"xlsx",d:"官方試算表 skill:公式、圖表、資料轉換,直接操作 Excel 檔. ",c:["doc","data"],r:"anthropics/skills",s:162638,u:"https://github.com/anthropics/skills/tree/main/skills/xlsx",o:1},
+ // ---- 開發 ----
+ {n:"skill-creator",d:"官方「寫 skill 的 skill」:引導你把工作流封裝成規格正確的 Claude Skill. ",c:["dev"],r:"anthropics/skills",s:162638,u:"https://github.com/anthropics/skills/tree/main/skills/skill-creator",o:1},
+ {n:"web-artifacts-builder",d:"官方 artifacts skill:用 React + Tailwind + shadcn/ui 生成多元件互動網頁. ",c:["dev","design"],r:"anthropics/skills",s:162638,u:"https://github.com/anthropics/skills/tree/main/skills/web-artifacts-builder",o:1},
+ {n:"mcp-builder",d:"官方 MCP skill:一步步引導你建自己的 Model Context Protocol server. ",c:["mcp","dev"],r:"anthropics/skills",s:162638,u:"https://github.com/anthropics/skills/tree/main/skills/mcp-builder",o:1},
+ {n:"test-driven-development",d:"Superpowers 招牌 skill:先寫測試再寫程式的 TDD 紀律,強制 Claude 不亂衝. ",c:["dev","test"],r:"obra/superpowers",s:257447,u:"https://github.com/obra/superpowers/tree/main/skills/test-driven-development"},
+ {n:"root-cause-tracing",d:"把錯誤一路追回真正源頭,不做表面修補 — 除錯時最值得裝的一塊. ",c:["dev"],r:"obra/superpowers",s:257447,u:"https://github.com/obra/superpowers/tree/main/skills/root-cause-tracing"},
+ {n:"brainstorming",d:"把模糊想法逼問成完整設計:蘇格拉底式提問,先想清楚再動手. ",c:["dev","content"],r:"obra/superpowers",s:257447,u:"https://github.com/obra/superpowers/tree/main/skills/brainstorming"},
+ {n:"using-git-worktrees",d:"用 git worktree 建隔離工作區,平行開發不互踩,附安全檢查. ",c:["dev"],r:"obra/superpowers",s:257447,u:"https://github.com/obra/superpowers/tree/main/skills/using-git-worktrees"},
+ {n:"finishing-a-development-branch",d:"收尾 skill:分支完成後的合併、清理、PR 流程一次帶完. ",c:["dev"],r:"obra/superpowers",s:257447,u:"https://github.com/obra/superpowers/tree/main/skills/finishing-a-development-branch"},
+ {n:"changelog-generator",d:"把 git commits 自動整理成使用者看得懂的 release notes. ",c:["dev","content"],r:"ComposioHQ/awesome-claude-skills",s:68086,u:"https://github.com/ComposioHQ/awesome-claude-skills/tree/master/changelog-generator"},
+ {n:"software-architecture",d:"Clean Architecture、SOLID、設計模式指導,讓 Claude 產出的架構不走鐘. ",c:["dev"],r:"NeoLabHQ/context-engineering-kit",s:1255,u:"https://github.com/NeoLabHQ/context-engineering-kit"},
+ {n:"prompt-engineering",d:"提示工程技巧包:教你(和 Claude)寫出更有效的 prompt 與 agent 指令. ",c:["dev","content"],r:"NeoLabHQ/context-engineering-kit",s:1255,u:"https://github.com/NeoLabHQ/context-engineering-kit"},
+ {n:"subagent-driven-development",d:"多 subagent 開發流:自動派工+code review 檢查點,適合大型任務. ",c:["dev","auto"],r:"NeoLabHQ/context-engineering-kit",s:1255,u:"https://github.com/NeoLabHQ/context-engineering-kit"},
+ {n:"Skill Seekers",d:"把任何技術文件網站自動轉成 Claude skill — 餵文件、產 skill. ",c:["dev","auto"],r:"yusufkaraaslan/Skill_Seekers",s:14497,u:"https://github.com/yusufkaraaslan/Skill_Seekers"},
+ {n:"D3.js Visualization",d:"教 Claude 產出正確的 D3 圖表與互動資料視覺化. ",c:["dev","data","design"],r:"chrisvoncsefalvay/claude-d3js-skill",s:213,u:"https://github.com/chrisvoncsefalvay/claude-d3js-skill"},
+ {n:"AWS Skills",d:"AWS CDK 開發、成本最佳化、serverless 模式,雲端開發者專用. ",c:["dev"],r:"zxkane/aws-skills",s:333,u:"https://github.com/zxkane/aws-skills"},
+ {n:"reddit-fetch",d:"WebFetch 被擋時改走 Reddit JSON API 抓內容,來自 ykdojo 的技巧合集. ",c:["dev","data"],r:"ykdojo/claude-code-tips",s:9354,u:"https://github.com/ykdojo/claude-code-tips/tree/main/skills/reddit-fetch"},
+ {n:"git-pushing",d:"自動化 git 操作與 repo 互動的工程工作流 skill. ",c:["dev","auto"],r:"mhattingpete/claude-skills-marketplace",s:648,u:"https://github.com/mhattingpete/claude-skills-marketplace"},
+ {n:"test-fixing",d:"偵測失敗測試、定位原因、提出修法 — 讓紅燈自動變綠燈. ",c:["dev","test"],r:"mhattingpete/claude-skills-marketplace",s:648,u:"https://github.com/mhattingpete/claude-skills-marketplace"},
+ // ---- 測試 ----
+ {n:"webapp-testing",d:"用 Playwright 實際打開本機網頁 app 操作驗證,網頁改完必跑. ",c:["test"],r:"ComposioHQ/awesome-claude-skills",s:68086,u:"https://github.com/ComposioHQ/awesome-claude-skills/tree/master/webapp-testing"},
+ {n:"Playwright Skill",d:"通用 Playwright 瀏覽器自動化:E2E 測試、表單、截圖都能做. ",c:["test","auto"],r:"lackeyjb/playwright-skill",s:2925,u:"https://github.com/lackeyjb/playwright-skill"},
+ {n:"iOS Simulator",d:"讓 Claude 操作 iOS 模擬器測 app:點擊、截圖、驗證 UI. ",c:["test"],r:"conorluddy/ios-simulator-skill",s:1160,u:"https://github.com/conorluddy/ios-simulator-skill"},
+ {n:"PyPICT 測試組合",d:"用微軟 PICT 組合測試法自動產出高覆蓋率測試案例. ",c:["test"],r:"omkamal/pypict-claude-skill",s:88,u:"https://github.com/omkamal/pypict-claude-skill"},
+ // ---- 資料 ----
+ {n:"CSV Data Summarizer",d:"丟 CSV 進來就自動分析:摘要、洞察、視覺化一次出. ",c:["data"],r:"coffeefuelbump/csv-data-summarizer-claude-skill",s:432,u:"https://github.com/coffeefuelbump/csv-data-summarizer-claude-skill"},
+ {n:"postgres",d:"安全唯讀模式查 PostgreSQL:讓 Claude 幫你寫 SQL 又不怕改壞資料. ",c:["data"],r:"sanjay3290/ai-skills",s:348,u:"https://github.com/sanjay3290/ai-skills/tree/main/skills/postgres"},
+ {n:"deep-research",d:"接 Gemini Deep Research 做多步驟深度研究,產出帶來源的報告. ",c:["data","content"],r:"sanjay3290/ai-skills",s:348,u:"https://github.com/sanjay3290/ai-skills/tree/main/skills/deep-research"},
+ {n:"NotebookLM Integration",d:"讓 Claude 和 NotebookLM 對話,拿到「有本可查」的來源根據答案. ",c:["data","content"],r:"PleasePrompto/notebooklm-skill",s:7431,u:"https://github.com/PleasePrompto/notebooklm-skill"},
+ // ---- 自動化 / MCP ----
+ {n:"Connect(1000+ 服務)",d:"透過 Composio 連 Gmail、Slack、GitHub、Notion 等 1000+ 服務:寄信、開 issue、發訊息. ",c:["auto","mcp"],r:"ComposioHQ/awesome-claude-skills",s:68086,u:"https://github.com/ComposioHQ/awesome-claude-skills/tree/master/connect"},
+ {n:"n8n Skills",d:"讓 Claude 看懂並操作 n8n 工作流,自動化玩家的橋接件. ",c:["auto"],r:"haunchen/n8n-skills",s:378,u:"https://github.com/haunchen/n8n-skills"},
+ // ---- 設計 ----
+ {n:"canvas-design",d:"用設計原則產出 PNG/PDF 視覺作品:海報、封面、卡片. ",c:["design"],r:"ComposioHQ/awesome-claude-skills",s:68086,u:"https://github.com/ComposioHQ/awesome-claude-skills/tree/master/canvas-design"},
+ {n:"theme-factory",d:"給 artifacts 套專業字體+配色主題,一秒脫離工程師審美. ",c:["design"],r:"ComposioHQ/awesome-claude-skills",s:68086,u:"https://github.com/ComposioHQ/awesome-claude-skills/tree/master/theme-factory"},
+ {n:"anydesign",d:"把圖片、網址、Figma 檔逆向解析成 design tokens 與設計系統. ",c:["design"],r:"uxKero/anydesign",s:137,u:"https://github.com/uxKero/anydesign"},
+ // ---- 內容 ----
+ {n:"content-research-writer",d:"寫作前先研究:自動查資料、加引用、改 hook,產出有據的內容. ",c:["content"],r:"ComposioHQ/awesome-claude-skills",s:68086,u:"https://github.com/ComposioHQ/awesome-claude-skills/tree/master/content-research-writer"},
+ {n:"Markdown → EPUB",d:"把 markdown 與對話摘要轉成 EPUB 電子書,自出版超方便. ",c:["content","doc"],r:"smerchek/claude-epub-skill",s:140,u:"https://github.com/smerchek/claude-epub-skill"},
+ // ---- 資安 ----
+ {n:"FFUF Web Fuzzing",d:"整合 ffuf 模糊測試器做網站弱點探測(授權測試用). ",c:["sec","test"],r:"jthack/ffuf_claude_skill",s:198,u:"https://github.com/jthack/ffuf_claude_skill"}
+];
+// ---------- render ----------
+const sf_grid = document.getElementById("sf_grid");
+const sf_fmtStar = n => n>=1000 ? (n/1000).toFixed(1).replace(/\.0$/,"")+"k" : String(n);
+function sf_render(list){
+  sf_grid.innerHTML = list.map((k,i)=>`
+  <div class="sf-slot${i%2?" sf-r":""}">
+    <div class="sf-pusher">
+      <svg viewBox="0 0 52 52" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <!-- speed lines -->
+        <path d="M2 18 h7 M0 26 h6 M3 34 h7" stroke="#E0A83B" stroke-width="1.8" stroke-linecap="round" opacity=".65"/>
+        <g transform="rotate(10 24 28)">
+          <!-- back leg (pushing off) -->
+          <rect x="8" y="36" width="12" height="4.6" rx="2.3" fill="#B9821F" transform="rotate(28 8 36)"/>
+          <!-- front leg (bent) -->
+          <rect x="20" y="38" width="4.6" height="10" rx="2.3" fill="#B9821F"/>
+          <ellipse cx="22.5" cy="48" rx="4" ry="2.2" fill="#8A6A2F"/>
+          <!-- body (leaning) -->
+          <rect x="13" y="24" width="17" height="16" rx="8" fill="#E0A83B" stroke="#B9821F" stroke-width="1.6"/>
+          <ellipse cx="22" cy="33" rx="5" ry="4.4" fill="#FDFBF7"/>
+          <!-- arms extended to the stone -->
+          <rect x="26" y="24" width="16" height="4.4" rx="2.2" fill="#B9821F" transform="rotate(-8 26 24)"/>
+          <rect x="26" y="31" width="17" height="4.4" rx="2.2" fill="#B9821F" transform="rotate(6 26 31)"/>
+          <circle cx="43" cy="23.5" r="2.6" fill="#E0A83B" stroke="#B9821F" stroke-width="1.2"/>
+          <circle cx="44" cy="34.5" r="2.6" fill="#E0A83B" stroke="#B9821F" stroke-width="1.2"/>
+          <!-- head (looking at the stone) -->
+          <circle cx="21" cy="14" r="9.5" fill="#E0A83B" stroke="#B9821F" stroke-width="1.6"/>
+          <!-- hard hat -->
+          <path d="M12 12.5 A9 9 0 0 1 30 12.5 Z" fill="#B9821F"/>
+          <rect x="10.5" y="11.5" width="21" height="3" rx="1.5" fill="#8A6A2F"/>
+          <!-- determined face, eyes toward stone -->
+          <circle cx="23" cy="16.5" r="1.6" fill="#3A2E1B"/><circle cx="28" cy="16.5" r="1.6" fill="#3A2E1B"/>
+          <path d="M24 21.5 h4.5" stroke="#3A2E1B" stroke-width="1.5" stroke-linecap="round"/>
+          <ellipse cx="20" cy="19.5" rx="1.8" ry="1.3" fill="#F3C878"/>
+          <!-- sweat drop -->
+          <path d="M11 8 q-1.6 2.4 0 3.6 q1.6 -1.2 0 -3.6" fill="#9CC8E8"/>
+        </g>
+      </svg>
+    </div>
+    <div class="sf-card">
+      <h3>${k.n}${k.o?'<span class="sf-badge sf-official">官方</span>':""}</h3>
+      <p class="sf-desc">${k.d}</p>
+      <div class="sf-tags">${k.c.map(c=>`<span class="sf-tag">${sf_cats[c]}</span>`).join("")}</div>
+      <div class="sf-meta"><span class="sf-repo">${k.r}</span><span class="sf-star">★ ${sf_fmtStar(k.s)}</span></div>
+      <a class="sf-go" href="${k.u}" target="_blank" rel="noopener">前往 GitHub →</a>
+    </div>
+  </div>`).join("");
+  document.getElementById("sf_count").textContent = `顯示 ${list.length} / ${sf_skills.length} 個 skills`;
+  document.getElementById("sf_empty").style.display = list.length ? "none" : "block";
+  sf_observe();
+}
+// ---------- scroll-in animation ----------
+let sf_io;
+function sf_observe(){
+  if(sf_io) sf_io.disconnect();
+  sf_io = new IntersectionObserver(es=>{
+    es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add("sf-in"); sf_io.unobserve(e.target);} });
+  },{threshold:.15,rootMargin:"0px 0px -40px 0px"});
+  document.querySelectorAll(".sf-slot:not(.sf-in)").forEach(el=>sf_io.observe(el));
+}
+// ---------- filter ----------
+const sf_active = new Set();
+const sf_chipsEl = document.getElementById("sf_chips");
+sf_chipsEl.innerHTML = `<button class="sf-chip sf-on" data-c="">全部</button>`+
+  Object.entries(sf_cats).map(([k,v])=>`<button class="sf-chip" data-c="${k}">${v}</button>`).join("");
+sf_chipsEl.addEventListener("click",e=>{
+  const b = e.target.closest(".sf-chip"); if(!b) return;
+  const c = b.dataset.c;
+  if(c===""){ sf_active.clear(); }
+  else { sf_active.has(c) ? sf_active.delete(c) : sf_active.add(c); }
+  sf_chipsEl.querySelectorAll(".sf-chip").forEach(x=>{
+    x.classList.toggle("sf-on", x.dataset.c==="" ? sf_active.size===0 : sf_active.has(x.dataset.c));
+  });
+  sf_apply();
+});
+const sf_input = document.getElementById("sf_search");
+sf_input.addEventListener("input", sf_apply);
+function sf_apply(){
+  const q = sf_input.value.trim().toLowerCase();
+  const list = sf_skills.filter(k=>{
+    const catOK = sf_active.size===0 || k.c.some(c=>sf_active.has(c));
+    if(!catOK) return false;
+    if(!q) return true;
+    const hay = (k.n+" "+k.d+" "+k.r+" "+k.c.map(c=>sf_cats[c]).join(" ")).toLowerCase();
+    return q.split(/\s+/).every(t=>hay.includes(t));
+  });
+  sf_render(list);
+}
+document.getElementById("sf_total").textContent = sf_skills.length;
+sf_render(sf_skills);
+</script>
+</body>
+</html>
