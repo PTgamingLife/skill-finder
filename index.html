@@ -3,120 +3,153 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Skill Finder — Curated AI Skill Library">
+<meta property="og:description" content="探索精選 Claude Skills，快速找到適合你的 AI 工作流。">
+<meta property="og:url" content="https://ptgaminglife.github.io/skill-finder/">
+<meta property="og:image" content="https://ptgaminglife.github.io/skill-finder/assets/og-skill-finder.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Skill Finder — Curated AI Skill Library">
+<meta name="twitter:description" content="探索精選 Claude Skills，快速找到適合你的 AI 工作流。">
+<meta name="twitter:image" content="https://ptgaminglife.github.io/skill-finder/assets/og-skill-finder.png">
 <title>Skill Finder — 找到最適合你的 Claude Skill</title>
 <meta name="description" content="精選 Claude Code / Claude Skills 搜尋器: 開發、測試、設計、內容、自動化、MCP、資料. 一鍵前往 GitHub.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'%3E%3Ccircle cx='48' cy='52' r='38' fill='%23E0A83B'/%3E%3Cpath d='M14 46 A34 34 0 0 1 82 46 Z' fill='%23B9821F'/%3E%3Crect x='10' y='42' width='76' height='9' rx='4.5' fill='%238A6A2F'/%3E%3Crect x='42' y='20' width='12' height='14' rx='5' fill='%238A6A2F'/%3E%3Ccircle cx='36' cy='62' r='5.5' fill='%233A2E1B'/%3E%3Ccircle cx='60' cy='62' r='5.5' fill='%233A2E1B'/%3E%3Cpath d='M38 74 Q48 81 58 74' stroke='%233A2E1B' stroke-width='4.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
 <style>
 :root{
-  --sf-bg:#FDFBF7; --sf-gold:#E0A83B; --sf-gold-deep:#B9821F; --sf-ink:#3A2E1B;
-  --sf-ink-soft:#7A6A4F; --sf-card:#FFFFFF; --sf-line:#EFE6D4; --sf-stone:#F6EFE1;
+  --sf-bg:#071019;--sf-bg-2:#0b1723;--sf-gold:#f4bd5b;--sf-gold-deep:#d28a27;
+  --sf-ink:#f7f2e8;--sf-ink-soft:#9fb0bf;--sf-card:rgba(18,31,43,.76);
+  --sf-line:rgba(255,255,255,.1);--sf-cyan:#6ee7e0;--sf-shadow:rgba(0,0,0,.38);
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;background:var(--sf-bg);color:var(--sf-ink);line-height:1.6}
+body{font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;background:
+radial-gradient(circle at 14% 4%,rgba(52,119,130,.22),transparent 30rem),
+radial-gradient(circle at 88% 15%,rgba(210,138,39,.14),transparent 26rem),
+linear-gradient(180deg,var(--sf-bg),var(--sf-bg-2) 50%,#08121c);color:var(--sf-ink);line-height:1.6;min-height:100vh;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:42px 42px;mask-image:linear-gradient(to bottom,#000,transparent 75%)}
 /* ---------- hero ---------- */
-.sf-hero{max-width:1080px;margin:0 auto;padding:72px 24px 36px;text-align:center}
-.sf-hero .sf-mascot{width:96px;height:96px;margin:0 auto 18px;animation:sfFloat 3s ease-in-out infinite}
-@keyframes sfFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-.sf-hero h1{font-size:clamp(2rem,5vw,3.2rem);letter-spacing:.02em}
-.sf-hero h1 em{font-style:normal;color:var(--sf-gold-deep);background:linear-gradient(transparent 62%,rgba(224,168,59,.35) 62%)}
-.sf-hero p{margin-top:14px;color:var(--sf-ink-soft);font-size:1.05rem}
-.sf-scroll-hint{margin-top:26px;color:var(--sf-gold-deep);font-size:.9rem;animation:sfFloat 2s ease-in-out infinite}
+.sf-hero{max-width:1120px;margin:0 auto;padding:74px 24px 48px;text-align:center;position:relative}
+.sf-hero:after{content:"";position:absolute;left:50%;bottom:0;width:min(700px,80vw);height:1px;transform:translateX(-50%);background:linear-gradient(90deg,transparent,rgba(244,189,91,.55),transparent)}
+.sf-eyebrow{display:inline-flex;align-items:center;gap:9px;border:1px solid rgba(110,231,224,.25);background:rgba(110,231,224,.07);color:var(--sf-cyan);padding:7px 13px;border-radius:999px;font-size:.73rem;font-weight:800;letter-spacing:.13em;text-transform:uppercase;margin-bottom:20px}
+.sf-eyebrow:before{content:"";width:6px;height:6px;border-radius:50%;background:var(--sf-cyan);box-shadow:0 0 14px var(--sf-cyan);animation:sfPulse 2s ease-in-out infinite}
+.sf-hero h1{font-size:clamp(2.7rem,7vw,5.6rem);line-height:.95;letter-spacing:-.055em;font-weight:900;text-shadow:0 15px 50px rgba(0,0,0,.25)}
+.sf-hero h1 em{font-style:normal;color:transparent;background:linear-gradient(135deg,#fff2c7 0%,var(--sf-gold) 48%,#de8a2b 100%);background-clip:text;-webkit-background-clip:text}
+.sf-hero p{max-width:650px;margin:22px auto 0;color:var(--sf-ink-soft);font-size:1.02rem}
+.sf-hero p strong{color:var(--sf-ink)}
+.sf-scroll-hint{display:inline-flex;align-items:center;gap:8px;margin-top:28px;color:#bdc9d3;font-size:.82rem}
+.sf-scroll-hint:after{content:"↓";color:var(--sf-gold);animation:sfNudge 1.8s ease-in-out infinite}
+@keyframes sfPulse{50%{opacity:.35;transform:scale(.72)}}
+@keyframes sfNudge{50%{transform:translateY(5px)}}
+/* articulated hero mascot */
+.sf-mascot{position:relative;width:126px;height:126px;margin:0 auto 18px;filter:drop-shadow(0 18px 25px rgba(0,0,0,.4));animation:sfHeroFloat 4.4s ease-in-out infinite}
+.sf-mascot:after{content:"";position:absolute;left:31px;bottom:3px;width:64px;height:10px;border-radius:50%;background:rgba(0,0,0,.38);filter:blur(4px);animation:sfShadow 4.4s ease-in-out infinite}
+.sf-hero-bot{position:absolute;inset:0;z-index:1;animation:sfHeroBody 4.4s ease-in-out infinite;transform-origin:50% 80%}
+.sf-hero-head{position:absolute;left:39px;top:18px;width:48px;height:45px;border:2px solid #e9a13c;border-radius:20px 20px 18px 18px;background:linear-gradient(145deg,#ffd77a,#e99a31);box-shadow:inset 6px 5px 9px rgba(255,255,255,.23)}
+.sf-hero-head:before{content:"";position:absolute;left:-5px;top:-5px;width:54px;height:15px;border-radius:15px 15px 5px 5px;background:#c47720;border-bottom:3px solid #915316;transform:rotate(-2deg)}
+.sf-hero-head:after{content:"";position:absolute;left:12px;top:23px;width:5px;height:6px;border-radius:50%;background:#17232d;box-shadow:18px 0 #17232d;animation:sfBlink 4.4s infinite}
+.sf-smile{position:absolute;left:17px;top:32px;width:14px;height:7px;border-bottom:2px solid #17232d;border-radius:50%}
+.sf-hero-body{position:absolute;left:42px;top:64px;width:42px;height:38px;border-radius:16px 16px 14px 14px;background:linear-gradient(145deg,#f8bd56,#c97820);border:2px solid #e89b31}
+.sf-hero-body:after{content:"SF";position:absolute;inset:8px 7px auto;border-radius:7px;background:rgba(7,16,25,.2);color:#fff4cf;font:800 8px/17px system-ui;letter-spacing:.08em}
+.sf-limb{position:absolute;width:9px;border-radius:9px;background:linear-gradient(#f4bd5b,#b9631b);transform-origin:50% 5px}
+.sf-arm-a{left:35px;top:69px;height:30px;transform:rotate(30deg)}
+.sf-arm-b{left:83px;top:66px;height:35px;animation:sfWave 2.2s ease-in-out infinite}
+.sf-leg-a,.sf-leg-b{top:96px;height:25px}.sf-leg-a{left:50px;transform:rotate(7deg)}.sf-leg-b{left:68px;transform:rotate(-7deg)}
+@keyframes sfHeroFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+@keyframes sfShadow{0%,100%{transform:scale(1);opacity:.7}50%{transform:scale(.75);opacity:.35}}
+@keyframes sfHeroBody{0%,100%{transform:rotate(-1deg)}50%{transform:rotate(2deg)}}
+@keyframes sfWave{0%,100%{transform:rotate(-132deg)}50%{transform:rotate(-166deg)}}
+@keyframes sfBlink{0%,44%,48%,100%{transform:scaleY(1)}46%{transform:scaleY(.12)}}
 /* ---------- sticky search bar ---------- */
-.sf-bar{position:sticky;top:0;z-index:50;background:rgba(253,251,247,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--sf-line);padding:14px 24px}
-.sf-bar-inner{max-width:1080px;margin:0 auto}
-.sf-search{display:flex;align-items:center;gap:10px;background:var(--sf-card);border:2px solid var(--sf-line);border-radius:14px;padding:10px 16px;transition:border-color .2s}
-.sf-search:focus-within{border-color:var(--sf-gold)}
+.sf-bar{position:sticky;top:0;z-index:50;background:rgba(7,16,25,.72);backdrop-filter:blur(20px) saturate(1.4);border-bottom:1px solid var(--sf-line);padding:14px 24px}
+.sf-bar-inner{max-width:1120px;margin:0 auto}
+.sf-search{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:12px 16px;transition:border-color .2s,box-shadow .2s,background .2s}
+.sf-search:focus-within{border-color:rgba(244,189,91,.7);background:rgba(255,255,255,.075);box-shadow:0 0 0 4px rgba(244,189,91,.08)}
 .sf-search svg{flex:none}
-.sf-search input{flex:1;border:none;outline:none;font-size:1rem;background:transparent;color:var(--sf-ink)}
+.sf-search input{flex:1;border:none;outline:none;font-size:.95rem;background:transparent;color:var(--sf-ink)}
+.sf-search input::placeholder{color:#718391}
 .sf-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
-.sf-chip{border:1.5px solid var(--sf-line);background:var(--sf-card);color:var(--sf-ink-soft);border-radius:999px;padding:5px 14px;font-size:.87rem;cursor:pointer;transition:all .15s;user-select:none}
-.sf-chip:hover{border-color:var(--sf-gold)}
-.sf-chip.sf-on{background:var(--sf-gold);border-color:var(--sf-gold);color:#fff;font-weight:700}
+.sf-chip{border:1px solid var(--sf-line);background:rgba(255,255,255,.045);color:var(--sf-ink-soft);border-radius:999px;padding:6px 13px;font-size:.82rem;cursor:pointer;transition:all .2s;user-select:none}
+.sf-chip:hover{border-color:rgba(244,189,91,.55);color:var(--sf-ink);transform:translateY(-1px)}
+.sf-chip.sf-on{background:linear-gradient(135deg,var(--sf-gold),var(--sf-gold-deep));border-color:transparent;color:#1c1509;font-weight:800;box-shadow:0 6px 18px rgba(210,138,39,.22)}
 .sf-count{margin-top:8px;font-size:.82rem;color:var(--sf-ink-soft)}
 /* ---------- grid & stone cards ---------- */
-.sf-main{max-width:1080px;margin:0 auto;padding:34px 24px 60px}
-.sf-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:22px}
+.sf-main{max-width:1120px;margin:0 auto;padding:42px 24px 80px}
+.sf-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:20px}
 .sf-slot{position:relative}
-.sf-card{position:relative;background:var(--sf-card);border:1px solid var(--sf-line);border-radius:16px;padding:20px;height:100%;display:flex;flex-direction:column;gap:10px;box-shadow:0 3px 0 var(--sf-stone),0 10px 24px rgba(58,46,27,.06);opacity:0;transform:translateX(-90px) rotate(-3deg)}
-.sf-slot.sf-r .sf-card{transform:translateX(90px) rotate(3deg)}
-.sf-slot.sf-in .sf-card{animation:sfPushL .6s cubic-bezier(.22,1.1,.36,1) forwards}
+.sf-card{position:relative;overflow:hidden;background:linear-gradient(145deg,rgba(22,37,50,.92),rgba(12,25,37,.82));border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:22px;height:100%;display:flex;flex-direction:column;gap:11px;box-shadow:0 18px 50px var(--sf-shadow),inset 0 1px rgba(255,255,255,.055);opacity:0;transform:translateX(-90px) rotate(-2deg);transition:border-color .25s,transform .25s,box-shadow .25s}
+.sf-card:before{content:"";position:absolute;inset:0 auto auto 0;width:100%;height:1px;background:linear-gradient(90deg,transparent,rgba(244,189,91,.65),transparent);opacity:.65}
+.sf-slot.sf-r .sf-card{transform:translateX(90px) rotate(2deg)}
+.sf-slot.sf-in .sf-card{animation:sfPushL .82s cubic-bezier(.18,.9,.26,1.05) forwards}
 .sf-slot.sf-in.sf-r .sf-card{animation-name:sfPushR}
-@keyframes sfPushL{to{opacity:1;transform:translateX(0) rotate(0)}}
-@keyframes sfPushR{to{opacity:1;transform:translateX(0) rotate(0)}}
-/* the little Claude figure that pushes the stone */
-.sf-pusher{position:absolute;top:50%;left:-16px;width:62px;height:62px;z-index:2;opacity:0;pointer-events:none}
-.sf-slot.sf-r .sf-pusher{left:auto;right:-14px;transform:scaleX(-1)}
-.sf-slot.sf-in .sf-pusher{animation:sfPusherGo 1.1s ease-out forwards}
+.sf-slot.sf-in .sf-card:hover{transform:translateY(-5px)!important;border-color:rgba(244,189,91,.34);box-shadow:0 24px 65px rgba(0,0,0,.48),0 0 0 1px rgba(244,189,91,.07)}
+@keyframes sfPushL{0%{opacity:0;transform:translateX(-90px) rotate(-2deg)}75%{opacity:1;transform:translateX(4px) rotate(.3deg)}100%{opacity:1;transform:none}}
+@keyframes sfPushR{0%{opacity:0;transform:translateX(90px) rotate(2deg)}75%{opacity:1;transform:translateX(-4px) rotate(-.3deg)}100%{opacity:1;transform:none}}
+/* articulated worker: separate body, limbs and dust */
+.sf-pusher{position:absolute;top:52%;left:-20px;width:66px;height:72px;z-index:2;opacity:0;pointer-events:none;filter:drop-shadow(0 8px 7px rgba(0,0,0,.38))}
+.sf-slot.sf-r .sf-pusher{left:auto;right:-18px}
+.sf-worker{position:absolute;inset:0;transform-origin:50% 90%}
+.sf-worker-head{position:absolute;left:19px;top:5px;width:25px;height:24px;border-radius:10px;background:linear-gradient(145deg,#ffd779,#d88726);border:1px solid #f0ad48}
+.sf-worker-head:before{content:"";position:absolute;left:-3px;top:-3px;width:29px;height:8px;border-radius:9px 9px 3px 3px;background:#a85c19;border-bottom:2px solid #763b0d}
+.sf-worker-head:after{content:"";position:absolute;right:5px;top:11px;width:3px;height:3px;border-radius:50%;background:#13212b;box-shadow:6px 0 #13212b}
+.sf-worker-body{position:absolute;left:20px;top:31px;width:26px;height:25px;border-radius:10px;background:linear-gradient(145deg,#efae43,#b55f19);border:1px solid #e79730}
+.sf-worker-arm,.sf-worker-leg{position:absolute;width:6px;border-radius:6px;background:linear-gradient(#efb24d,#a95817);transform-origin:50% 3px}
+.sf-worker-arm{left:41px;top:33px;height:27px}.sf-worker-arm.a{transform:rotate(-78deg)}.sf-worker-arm.b{top:42px;transform:rotate(-67deg)}
+.sf-worker-leg{top:53px;height:20px}.sf-worker-leg.a{left:24px;transform:rotate(30deg)}.sf-worker-leg.b{left:37px;transform:rotate(-25deg)}
+.sf-worker-dust{position:absolute;left:8px;bottom:3px;width:5px;height:5px;border-radius:50%;background:#c79958;box-shadow:9px -2px 0 -1px #c79958,17px 1px 0 -2px #c79958;opacity:0}
+.sf-slot.sf-r .sf-worker{transform:scaleX(-1)}
+.sf-slot.sf-in .sf-pusher{animation:sfPusherGo 1.28s ease-out forwards}
 .sf-slot.sf-in.sf-r .sf-pusher{animation-name:sfPusherGoR}
+.sf-slot.sf-in .sf-worker{animation:sfWorkerStrain .34s ease-in-out 3}
+.sf-slot.sf-in .sf-worker-leg.a{animation:sfStepA .26s ease-in-out 4}.sf-slot.sf-in .sf-worker-leg.b{animation:sfStepB .26s ease-in-out 4}
+.sf-slot.sf-in .sf-worker-dust{animation:sfDust .32s ease-out 3}
 @keyframes sfPusherGo{
-  0%{opacity:1;transform:translate(-90px,-50%)}
-  50%{opacity:1;transform:translate(-6px,-50%)}
-  64%{transform:translate(-6px,-72%)}
-  76%{transform:translate(-6px,-50%)}
-  88%{transform:translate(-6px,-66%)}
-  100%{opacity:0;transform:translate(-6px,-50%)}
+  0%{opacity:0;transform:translate(-105px,-50%)}
+  12%{opacity:1}58%{opacity:1;transform:translate(-4px,-50%)}
+  76%{opacity:1;transform:translate(1px,-56%) rotate(-4deg)}
+  100%{opacity:0;transform:translate(9px,-48%) rotate(6deg)}
 }
 @keyframes sfPusherGoR{
-  0%{opacity:1;transform:scaleX(-1) translate(-90px,-50%)}
-  50%{opacity:1;transform:scaleX(-1) translate(-6px,-50%)}
-  64%{transform:scaleX(-1) translate(-6px,-72%)}
-  76%{transform:scaleX(-1) translate(-6px,-50%)}
-  88%{transform:scaleX(-1) translate(-6px,-66%)}
-  100%{opacity:0;transform:scaleX(-1) translate(-6px,-50%)}
+  0%{opacity:0;transform:translate(105px,-50%)}
+  12%{opacity:1}58%{opacity:1;transform:translate(4px,-50%)}
+  76%{opacity:1;transform:translate(-1px,-56%) rotate(4deg)}
+  100%{opacity:0;transform:translate(-9px,-48%) rotate(-6deg)}
 }
-.sf-card h3{font-size:1.08rem;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.sf-badge{font-size:.68rem;font-weight:700;color:#fff;background:var(--sf-gold);border-radius:6px;padding:2px 7px;letter-spacing:.05em}
-.sf-badge.sf-official{background:#8A6A2F}
+@keyframes sfWorkerStrain{0%,100%{transform:rotate(-7deg) translateY(0)}50%{transform:rotate(-11deg) translateY(2px)}}
+@keyframes sfStepA{50%{transform:rotate(48deg)}}@keyframes sfStepB{50%{transform:rotate(-9deg)}}
+@keyframes sfDust{0%{opacity:0;transform:scale(.4)}45%{opacity:.7}100%{opacity:0;transform:translate(-10px,-5px) scale(1.5)}}
+.sf-card h3{font-size:1.06rem;line-height:1.35;display:flex;align-items:center;gap:8px;flex-wrap:wrap;color:#fff9ed}
+.sf-badge{font-size:.65rem;font-weight:800;color:#1c1509;background:var(--sf-gold);border-radius:6px;padding:2px 7px;letter-spacing:.05em}
+.sf-badge.sf-official{background:var(--sf-cyan);color:#092126}
 .sf-desc{font-size:.92rem;color:var(--sf-ink-soft);flex:1}
 .sf-tags{display:flex;flex-wrap:wrap;gap:6px}
-.sf-tag{font-size:.74rem;color:var(--sf-gold-deep);background:rgba(224,168,59,.13);border-radius:6px;padding:2px 8px}
+.sf-tag{font-size:.72rem;color:#f5c776;background:rgba(244,189,91,.1);border:1px solid rgba(244,189,91,.12);border-radius:6px;padding:2px 8px}
 .sf-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;border-top:1px dashed var(--sf-line);padding-top:12px;margin-top:2px}
 .sf-repo{font-size:.78rem;color:var(--sf-ink-soft);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.sf-star{font-size:.82rem;color:var(--sf-gold-deep);font-weight:700;white-space:nowrap}
-.sf-go{display:block;text-align:center;margin-top:4px;background:var(--sf-gold);color:#fff;text-decoration:none;font-weight:700;font-size:.92rem;border-radius:10px;padding:9px 0;transition:background .15s,transform .1s}
-.sf-go:hover{background:var(--sf-gold-deep);transform:translateY(-1px)}
+.sf-star{font-size:.82rem;color:#f5c776;font-weight:800;white-space:nowrap}
+.sf-go{display:block;text-align:center;margin-top:4px;background:rgba(255,255,255,.065);border:1px solid rgba(255,255,255,.1);color:#fff1cc;text-decoration:none;font-weight:800;font-size:.88rem;border-radius:10px;padding:10px 0;transition:background .2s,transform .2s,border-color .2s}
+.sf-go:hover{background:linear-gradient(135deg,var(--sf-gold),var(--sf-gold-deep));border-color:transparent;color:#1c1509;transform:translateY(-1px)}
 .sf-empty{display:none;text-align:center;padding:70px 0;color:var(--sf-ink-soft)}
 .sf-empty svg{width:72px;height:72px;margin-bottom:12px;opacity:.7}
 /* ---------- footer ---------- */
-.sf-foot{border-top:1px solid var(--sf-line);text-align:center;padding:28px 24px 40px;font-size:.8rem;color:var(--sf-ink-soft)}
-.sf-foot a{color:var(--sf-gold-deep)}
-@media (prefers-reduced-motion:reduce){.sf-card{opacity:1!important;transform:none!important;animation:none!important}.sf-pusher{display:none}}
+.sf-foot{border-top:1px solid var(--sf-line);background:rgba(0,0,0,.12);text-align:center;padding:32px 24px 46px;font-size:.8rem;color:#768998}
+.sf-foot a{color:var(--sf-gold)}
+@media(max-width:640px){.sf-hero{padding-top:52px}.sf-grid{grid-template-columns:1fr}.sf-bar{padding-inline:14px}.sf-main{padding-inline:14px}.sf-pusher{display:none}.sf-card{transform:translateY(26px)!important}.sf-slot.sf-in .sf-card{animation:sfMobileIn .6s ease-out forwards}@keyframes sfMobileIn{to{opacity:1;transform:none}}}
+@media (prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}.sf-card{opacity:1!important;transform:none!important}.sf-pusher{display:none}}
 </style>
 </head>
 <body>
 
 <header class="sf-hero">
   <div class="sf-mascot">
-    <svg viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <ellipse cx="48" cy="90" rx="22" ry="4.5" fill="#EFE6D4"/>
-      <!-- legs -->
-      <rect x="39" y="72" width="7" height="15" rx="3.5" fill="#B9821F"/>
-      <rect x="50" y="72" width="7" height="15" rx="3.5" fill="#B9821F"/>
-      <ellipse cx="42" cy="88" rx="5" ry="3" fill="#8A6A2F"/><ellipse cx="54" cy="88" rx="5" ry="3" fill="#8A6A2F"/>
-      <!-- waving arm (up) -->
-      <rect x="66" y="34" width="7" height="20" rx="3.5" fill="#B9821F" transform="rotate(140 69 52)"/>
-      <circle cx="80" cy="38" r="4.2" fill="#E0A83B" stroke="#B9821F" stroke-width="1.6"/>
-      <!-- resting arm -->
-      <rect x="24" y="52" width="7" height="18" rx="3.5" fill="#B9821F" transform="rotate(18 27 54)"/>
-      <!-- body -->
-      <rect x="32" y="48" width="32" height="28" rx="13" fill="#E0A83B" stroke="#B9821F" stroke-width="2.2"/>
-      <ellipse cx="48" cy="64" rx="10" ry="8" fill="#FDFBF7"/>
-      <!-- head -->
-      <circle cx="48" cy="30" r="17" fill="#E0A83B" stroke="#B9821F" stroke-width="2.2"/>
-      <!-- hard hat -->
-      <path d="M32 27 A16 16 0 0 1 64 27 Z" fill="#B9821F"/>
-      <rect x="29" y="25.5" width="38" height="4.5" rx="2.2" fill="#8A6A2F"/>
-      <rect x="45" y="14.5" width="6" height="7" rx="2.5" fill="#8A6A2F"/>
-      <!-- face -->
-      <circle cx="42" cy="34" r="2.6" fill="#3A2E1B"/><circle cx="54" cy="34" r="2.6" fill="#3A2E1B"/>
-      <circle cx="43" cy="33.2" r=".9" fill="#fff"/><circle cx="55" cy="33.2" r=".9" fill="#fff"/>
-      <path d="M43 40 Q48 44.5 53 40" stroke="#3A2E1B" stroke-width="2.2" fill="none" stroke-linecap="round"/>
-      <ellipse cx="37" cy="38.5" rx="2.6" ry="1.8" fill="#F3C878"/><ellipse cx="59" cy="38.5" rx="2.6" ry="1.8" fill="#F3C878"/>
-      <!-- sparkle -->
-      <path d="M20 20 l1.6 3.6 3.6 1.6 -3.6 1.6 -1.6 3.6 -1.6 -3.6 -3.6 -1.6 3.6 -1.6 Z" fill="#E0A83B" opacity=".8"/>
-    </svg>
+    <div class="sf-hero-bot" aria-hidden="true">
+      <span class="sf-hero-head"><i class="sf-smile"></i></span>
+      <span class="sf-hero-body"></span>
+      <span class="sf-limb sf-arm-a"></span><span class="sf-limb sf-arm-b"></span>
+      <span class="sf-limb sf-leg-a"></span><span class="sf-limb sf-leg-b"></span>
+    </div>
   </div>
+  <div class="sf-eyebrow">Curated AI skill library</div>
   <h1>Skill <em>Finder</em></h1>
   <p>精選 <strong id="sf_total">…</strong> 個 Claude Skills — 開發與 AI 工作流專用. <br>搜尋、篩選, 找到適合你的那一塊, 點下去直達 GitHub.</p>
   <div class="sf-scroll-hint">▼ 往下滑, 小人偶會把 Skill 一塊一塊推出來</div>
@@ -214,36 +247,12 @@ function sf_render(list){
   sf_grid.innerHTML = list.map((k,i)=>`
   <div class="sf-slot${i%2?" sf-r":""}">
     <div class="sf-pusher">
-      <svg viewBox="0 0 52 52" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <!-- speed lines -->
-        <path d="M2 18 h7 M0 26 h6 M3 34 h7" stroke="#E0A83B" stroke-width="1.8" stroke-linecap="round" opacity=".65"/>
-        <g transform="rotate(10 24 28)">
-          <!-- back leg (pushing off) -->
-          <rect x="8" y="36" width="12" height="4.6" rx="2.3" fill="#B9821F" transform="rotate(28 8 36)"/>
-          <!-- front leg (bent) -->
-          <rect x="20" y="38" width="4.6" height="10" rx="2.3" fill="#B9821F"/>
-          <ellipse cx="22.5" cy="48" rx="4" ry="2.2" fill="#8A6A2F"/>
-          <!-- body (leaning) -->
-          <rect x="13" y="24" width="17" height="16" rx="8" fill="#E0A83B" stroke="#B9821F" stroke-width="1.6"/>
-          <ellipse cx="22" cy="33" rx="5" ry="4.4" fill="#FDFBF7"/>
-          <!-- arms extended to the stone -->
-          <rect x="26" y="24" width="16" height="4.4" rx="2.2" fill="#B9821F" transform="rotate(-8 26 24)"/>
-          <rect x="26" y="31" width="17" height="4.4" rx="2.2" fill="#B9821F" transform="rotate(6 26 31)"/>
-          <circle cx="43" cy="23.5" r="2.6" fill="#E0A83B" stroke="#B9821F" stroke-width="1.2"/>
-          <circle cx="44" cy="34.5" r="2.6" fill="#E0A83B" stroke="#B9821F" stroke-width="1.2"/>
-          <!-- head (looking at the stone) -->
-          <circle cx="21" cy="14" r="9.5" fill="#E0A83B" stroke="#B9821F" stroke-width="1.6"/>
-          <!-- hard hat -->
-          <path d="M12 12.5 A9 9 0 0 1 30 12.5 Z" fill="#B9821F"/>
-          <rect x="10.5" y="11.5" width="21" height="3" rx="1.5" fill="#8A6A2F"/>
-          <!-- determined face, eyes toward stone -->
-          <circle cx="23" cy="16.5" r="1.6" fill="#3A2E1B"/><circle cx="28" cy="16.5" r="1.6" fill="#3A2E1B"/>
-          <path d="M24 21.5 h4.5" stroke="#3A2E1B" stroke-width="1.5" stroke-linecap="round"/>
-          <ellipse cx="20" cy="19.5" rx="1.8" ry="1.3" fill="#F3C878"/>
-          <!-- sweat drop -->
-          <path d="M11 8 q-1.6 2.4 0 3.6 q1.6 -1.2 0 -3.6" fill="#9CC8E8"/>
-        </g>
-      </svg>
+      <div class="sf-worker" aria-hidden="true">
+        <span class="sf-worker-head"></span><span class="sf-worker-body"></span>
+        <span class="sf-worker-arm a"></span><span class="sf-worker-arm b"></span>
+        <span class="sf-worker-leg a"></span><span class="sf-worker-leg b"></span>
+        <span class="sf-worker-dust"></span>
+      </div>
     </div>
     <div class="sf-card">
       <h3>${k.n}${k.o?'<span class="sf-badge sf-official">官方</span>':""}</h3>
